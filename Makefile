@@ -1,13 +1,30 @@
 CC=clang
-CFLAGS=-I./src
 
-dir_guard=@mkdir -p $(@D)
+TARGET_EXEC ?= thirlage
 
-thirlage: build_directory #thirlage.o page.o
-	echo "OK"
-# $(CC) -o thirlage.out thirlage.o page.o 
+BUILD_DIR ?= ./build
+SRC_DIRS ?= ./src
 
-build_directory:
-	mkdir -p build
+SRCS := $(shell find $(SRC_DIRS) -name *.c)
+OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
+DEPS := $(OBJS:.o=.d)
 
-# if makeheaders is there, run that
+INC_DIRS := $(shell find $(SRC_DIRS) -type d)
+INC_FLAGS := $(addprefix -I,$(INC_DIRS))
+
+$(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
+	$(CC) $(OBJS) -o $@ $(LDFLAGS)
+
+$(BUILD_DIR)/%.c.o: %.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(INC_FLAGS) $(CFLAGS) -c $< -o $@
+
+.PHONY: clean
+
+clean:
+	$(RM) -r $(BUILD_DIR)
+
+-include $(DEPS)
+
+MKDIR_P ?= mkdir -p
+

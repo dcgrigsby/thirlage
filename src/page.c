@@ -31,9 +31,11 @@
 
 int serializePage(Page *page, unsigned char *serializedPage) {
   uint8_t *data = {0};
+  return 1;
 }
 
 int deserializePage(unsigned char *serializedPage, Page *page) {
+  return 1;
 }
 
 

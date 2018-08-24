@@ -1,0 +1,22 @@
+First crack at a simple page:
+
+A single table
+A page represents a table
+Single page, on disk, in memory with cells
+
+Future:
+ 
+Multiple pages, fixed size w/ free list
+Single table still; how to link to next page?
+
+Multiple tables
+ First page a table that points to other tables
+
+Delete cells, then defragment
+
+Grow pages, instead of fixed size.
+ Retain free list for dropped tables. Consult before creating new page. 
+
+Think about how to do partial updates/patches when writing to pages
+
+

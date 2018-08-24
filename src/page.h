@@ -5,30 +5,30 @@
  * @file page.h 
  * @brief Database Page struct and functions
  *
- * A database page library that follows the [Minimalist C Libraries](https://nullprogram.com/blog/2018/06/10/) 
- * precepts of a minimizing the number of functions, no dynamic memory allocations, no I/O and, at most, one struct.
+ * A database page library that follows the [Minimalist C Libraries](https://nullprogram.com/blog/2018/06/10/) princles
+ * of a minimizing the number of (non-static) functions, no dynamic memory allocations, no I/O and, at most, one struct.
  * 
- * A page is a contiguous block of bytes that holds rows for a table.
+ * A page is a contiguous block of bytes that holds a header and rows for a table.
  *
- * A page has cells. Cells are contiguous blocks of bytes that represent one row in left-to-right order.  
+ * The header starts at the first position of the bytes and is defined in the Page struct.
  *
- * Cells are written starting at the end of the page, filling in right-to-left.
+ * Rows are variable length contiguous blocks of bytes stored in left-to-right order.  
  *
- * Functions return 1 for success, 0 for failure.
+ * Rows are written starting at the end of the page, filling in right-to-left.
  *
  */
 
 #define MAX_PAGE_SIZE 65535 
 
+#define HEADER_TYPE uint16_t
+#define BYTE_TYPE uint16_t
+
 typedef struct Page Page;
 
 struct Page {
-  uint16_t number_of_cells; 
-  uint16_t last_free_block;   //!< The last, or right-most, free block; next added cell will end here
-  uint16_t *cell_offsets;     //!< Page size cannot be >65535, so 2 byte int is large enough
-  uint8_t *blocks;
+  BYTE_TYPE *bytes;
+  HEADER_TYPE *number_of_rows; 
+  HEADER_TYPE *positions_of_rows;    
 };
 
-int deserializePage(uint8_t *serializedPage, Page *page);
-
-int serializePage(Page *page, uint8_t *serializedPage);
+void initPageFromBytes(Page *page, BYTE_TYPE *bytes);

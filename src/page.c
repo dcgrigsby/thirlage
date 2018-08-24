@@ -25,9 +25,6 @@
  *
  */
 
-#define MAX_PAGE_SIZE 65535 // Placed in .c and not .h because this should not be user configurable
-
-
 
 int serializePage(Page *page, unsigned char *serializedPage) {
   uint8_t *data = {0};

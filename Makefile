@@ -3,6 +3,7 @@ CC=clang
 TARGET_EXEC ?= thirlage
 
 BUILD_DIR ?= ./build
+DOC_DIR ?= ./doc
 SRC_DIRS ?= ./src
 
 SRCS := $(shell find $(SRC_DIRS) -name *.c)
@@ -21,8 +22,17 @@ $(BUILD_DIR)/%.c.o: %.c
 
 .PHONY: clean
 
-clean:
+doc: doxygen.conf
+	$(RM) -r $(DOC_DIR)
+	doxygen doxygen.conf
+
+clean-doc:
+	$(RM) -r $(DOC_DIR)
+
+clean-build:
 	$(RM) -r $(BUILD_DIR)
+
+clean: clean-doc clean-build
 
 -include $(DEPS)
 

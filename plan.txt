@@ -13,6 +13,8 @@ Multiple tables
  First page a table that points to other tables
 
 Delete cells, then defragment
+  Mark for deletion and do later, or do when delete called? 
+  Threading?
 
 Grow pages, instead of fixed size.
  Retain free list for dropped tables. Consult before creating new page. 

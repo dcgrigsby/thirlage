@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <stdint.h>
 
 /**
@@ -5,9 +6,6 @@
  * @file page.h 
  * @brief Database Page struct and functions
  *
- * A database page library that follows the [Minimalist C Libraries](https://nullprogram.com/blog/2018/06/10/) princles
- * of a minimizing the number of (non-static) functions, no dynamic memory allocations, no I/O and, at most, one struct.
- * 
  * A page is a contiguous block of bytes that holds a header and rows for a table.
  *
  * The header starts at the first position of the bytes and is defined in the Page struct.
@@ -21,14 +19,16 @@
 #define MAX_PAGE_SIZE 65535 
 
 #define HEADER_TYPE uint16_t
-#define BYTE_TYPE uint16_t
+#define BYTE_TYPE uint8_t
 
-typedef struct Page Page;
+typedef struct thirlage_page thirlage_page;
 
-struct Page {
+struct thirlage_page {
   BYTE_TYPE *bytes;
   HEADER_TYPE *number_of_rows; 
   HEADER_TYPE *positions_of_rows;    
 };
 
-void initPageFromBytes(Page *page, BYTE_TYPE *bytes);
+void thirlage_init_page_from_bytes(thirlage_page *page, BYTE_TYPE *bytes);
+
+void thirlage_insert_row_bytes_in_page(thirlage_page *page, BYTE_TYPE *bytes, size_t n);

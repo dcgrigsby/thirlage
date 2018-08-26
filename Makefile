@@ -1,40 +1,41 @@
 CC=clang
+SRC_DIR=./src
+BUILD_DIR=./build
+DOC_DIR=./doc
 
-TARGET_EXEC ?= thirlage
+OBJS=$(shell find $(SRC_DIR) -name '*.c'|sed 's:$(SRC_DIR)/\(.*\).c:$(BUILD_DIR)/\1.o:')
 
-BUILD_DIR ?= ./build
-DOC_DIR ?= ./doc
-SRC_DIRS ?= ./src
+# both thirlage.c and tests.c have a main(), so exclude the other when building
 
-SRCS := $(shell find $(SRC_DIRS) -name *.c)
-OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
-DEPS := $(OBJS:.o=.d)
-
-INC_DIRS := $(shell find $(SRC_DIRS) -type d)
-INC_FLAGS := $(addprefix -I,$(INC_DIRS))
-
-$(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	$(CC) $(OBJS) -o $@ $(LDFLAGS)
-
-$(BUILD_DIR)/%.c.o: %.c
-	$(MKDIR_P) $(dir $@)
-	$(CC) $(INC_FLAGS) $(CFLAGS) -c $< -o $@
-
-.PHONY: clean
-
+thirlage: $(OBJS)
+	$(CC) $(shell echo $(OBJS) |sed 's:$(BUILD_DIR)/tests.o::') -o $@
+	
+tests:
+	$(CC) $(shell echo $(OBJS) |sed 's:$(BUILD_DIR)/thirlage.o::') -o $@
+	
 doc: doxygen.conf
-	$(RM) -r $(DOC_DIR)
-	doxygen doxygen.conf
+	(cat doxygen.conf; echo "OUTPUT_DIRECTORY=$(DOC_DIR)") | doxygen -
+
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c # TODO: if exists .h file too
+	mkdir -p $(BUILD_DIR)
+	$(CC) -I src -c $< -o $@
+
+.PHONY: clean-doc clean-build
 
 clean-doc:
-	$(RM) -r $(DOC_DIR)
+	rm -fr $(DOC_DIR)
 
 clean-build:
-	$(RM) -r $(BUILD_DIR)
+	rm -fr $(BUILD_DIR)
 
-clean: clean-doc clean-build
+clean-thirlage:
+	rm -rf thirlage
 
--include $(DEPS)
+clean-tests:
+	rm -rf tests
 
-MKDIR_P ?= mkdir -p
+clean: clean-doc clean-build clean-tests clean-thirlage
+
+
+
 

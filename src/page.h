@@ -16,20 +16,22 @@
  *
  */
 
-#define MAX_PAGE_SIZE 65535 
+#define THIRLAGE_MAX_PAGE_SIZE 65535 
 
-#define HEADER_TYPE uint16_t
-#define BYTE_TYPE uint8_t
+#define THIRLAGE_PAGE_HEADER_TYPE uint16_t
+#define THIRLAGE_BYTE_TYPE uint8_t
 
 typedef struct thirlage_page thirlage_page;
 
 struct thirlage_page {
-  BYTE_TYPE *bytes;
-  HEADER_TYPE *p;
-  HEADER_TYPE *number_of_rows; 
-  HEADER_TYPE *positions_of_rows;    
+  THIRLAGE_BYTE_TYPE *bytes;
+  THIRLAGE_PAGE_HEADER_TYPE *p;
+  THIRLAGE_PAGE_HEADER_TYPE *number_of_rows; 
+  THIRLAGE_PAGE_HEADER_TYPE *positions_of_rows;    
 };
 
-void thirlage_init_page_from_bytes(thirlage_page *page, BYTE_TYPE *bytes);
+void thirlage_init_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes);
 
-int thirlage_insert_row_bytes_in_page(thirlage_page *page, BYTE_TYPE *bytes, size_t n);
+void thirlage_init_empty_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes, size_t n);
+
+int thirlage_insert_row_bytes_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes, size_t n);

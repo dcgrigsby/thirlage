@@ -27,17 +27,18 @@ void thirlage_init_empty_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes, si
 }
 
 int thirlage_insert_row_bytes_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes, size_t n) {
+  // TODO calculate available space, if n > available_space then return 0
 
+  // increment number of rows
+  (*page->number_of_rows)++; 
+  
   /*
-  // calculate available space, if n > available_space then return 0
 
   // copy bytes into page
   HEADER_TYPE position_of_last_row = page->positions_of_rows[*page->number_of_rows - 1]; 
   BYTE_TYPE *p = page->bytes + page->p - n;
   memcpy(p, bytes, n); 
 
-  // increment number of rows
-  (*page->number_of_rows)++; 
 
   HEADER_TYPE position = p - page->bytes;
 

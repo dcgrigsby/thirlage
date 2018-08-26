@@ -11,7 +11,7 @@ DEPS=$(OBJS:.o=.d)
 thirlage: $(OBJS)
 	$(CC) $(shell echo $(OBJS) |sed 's:$(BUILD_DIR)/tests.o::') -o $@
 	
-tests:
+tests: $(OBJS)
 	$(CC) $(shell echo $(OBJS) |sed 's:$(BUILD_DIR)/thirlage.o::') -o $@
 	
 doc: doxygen.conf

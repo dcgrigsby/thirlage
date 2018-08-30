@@ -54,8 +54,17 @@ int thirlage_insert_row_bytes_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *b
 }
 
 /*
- * @brief Return a pointer to the n-th row in *page.
+ * @brief Set *bytes to the n-th row in *page.
  */
-THIRLAGE_BYTE_TYPE *thirlage_bytes_for_row_in_page(thirlage_page *page, THIRLAGE_PAGE_HEADER_TYPE n) {
-  return page->bytes + page->positions_of_rows[n]; 
+int thirlage_bytes_for_row_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE **bytes, THIRLAGE_PAGE_HEADER_TYPE n) {
+  if (n > *page->number_of_rows - 1)
+    return 0;
+
+  *bytes = page->bytes + page->positions_of_rows[n]; 
+
+  return 1;
+}
+
+void thirlage_delete_row_in_page(thirlage_page *page, THIRLAGE_PAGE_HEADER_TYPE n) {
+
 }

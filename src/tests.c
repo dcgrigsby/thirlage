@@ -19,8 +19,11 @@ static char *test_page() {
   mu_assert("Adding a row should increase number_of_rows", *page.number_of_rows == 1);
   mu_assert("Adding a row should move p appropriately", *page.p == page_size - sizeof(row));
 
-  THIRLAGE_BYTE_TYPE *row_bytes = thirlage_bytes_for_row_in_page(&page, 0);
-  mu_assert("*row_bytes should be correct", memcmp(row_bytes, row, sizeof(row)) == 0);
+  THIRLAGE_BYTE_TYPE *row_bytes;
+  mu_assert("Getting a row's bytes should succeed", thirlage_bytes_for_row_in_page(&page, &row_bytes, 0) == 1);
+  mu_assert("A gotten row's bytes should be correct", memcmp(row_bytes, row, sizeof(row)) == 0);
+
+  mu_assert("Getting an invalid row's bytes should fail", thirlage_bytes_for_row_in_page(&page, &row_bytes, *page.number_of_rows) == 0);
 
 
   THIRLAGE_BYTE_TYPE oversized_row[1024] = {0};

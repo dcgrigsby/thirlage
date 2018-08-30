@@ -14,10 +14,11 @@
  *
  * Rows are written starting at the end of the page, filling in right-to-left. 
  *
+ * Pages can be no larger than 65535 bytes.
+ *
  */
 
-#define THIRLAGE_MAX_PAGE_SIZE 65535 
-
+// header type capable of supporting page sizes up to 65535 bytes. attempts to set larger will be caught by compiler.
 #define THIRLAGE_PAGE_HEADER_TYPE uint16_t
 #define THIRLAGE_BYTE_TYPE uint8_t
 

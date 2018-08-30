@@ -25,9 +25,6 @@ void thirlage_init_empty_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes, TH
 	thirlage_init_page(page, bytes);
   *page->p = n;
   *page->number_of_rows = 0;
-
-  // XXX TODO return 0 if n is > max page type
-
 }
 
 int thirlage_insert_row_bytes_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes, size_t n) {

@@ -7,7 +7,6 @@ int assertions_evaluated = 0;
 
 static char *test_page() {
 	const THIRLAGE_PAGE_HEADER_TYPE page_size = 512;
-
 	thirlage_page page;
   THIRLAGE_BYTE_TYPE bytes[page_size] = {0};
 	thirlage_init_empty_page(&page, bytes, page_size); 

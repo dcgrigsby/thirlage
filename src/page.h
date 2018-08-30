@@ -36,3 +36,6 @@ void thirlage_init_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes);
 void thirlage_init_empty_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes, THIRLAGE_PAGE_HEADER_TYPE n);
 
 int thirlage_insert_row_bytes_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes, size_t n);
+
+THIRLAGE_BYTE_TYPE *thirlage_bytes_for_row_in_page(thirlage_page *page, THIRLAGE_PAGE_HEADER_TYPE n);
+

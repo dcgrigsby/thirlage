@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "minunit.h"
 #include "page.h"
 
@@ -17,6 +18,10 @@ static char *test_page() {
   mu_assert("Adding a row should succeed", thirlage_insert_row_bytes_in_page(&page, row, sizeof(row)) == 1);
   mu_assert("Adding a row should increase number_of_rows", *page.number_of_rows == 1);
   mu_assert("Adding a row should move p appropriately", *page.p == page_size - sizeof(row));
+
+  THIRLAGE_BYTE_TYPE *row_bytes = thirlage_bytes_for_row_in_page(&page, 0);
+  mu_assert("*row_bytes should be correct", memcmp(row_bytes, row, sizeof(row)) == 0);
+
 
   THIRLAGE_BYTE_TYPE oversized_row[1024] = {0};
   mu_assert("Adding an oversized row should fail", thirlage_insert_row_bytes_in_page(&page, oversized_row, sizeof(oversized_row)) == 0); 

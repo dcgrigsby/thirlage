@@ -15,12 +15,12 @@ static char *test_page() {
   mu_assert("An empty page's p should point to the last byte of the page", *page.p = page_size);
 
   THIRLAGE_BYTE_TYPE row[] = {3, 2, 1};
-  thirlage_insert_row_bytes_in_page(&page, row, sizeof(row));
+  mu_assert("Adding a row should succeed", thirlage_insert_row_bytes_in_page(&page, row, sizeof(row)) == 1);
   mu_assert("Adding a row should increase number_of_rows", *page.number_of_rows == 1);
-  mu_assert("Adding a row should move p appropriately", *page.p = page_size - sizeof(row));
+  mu_assert("Adding a row should move p appropriately", *page.p == page_size - sizeof(row));
 
-
-  // TODO test a too large row 
+  THIRLAGE_BYTE_TYPE oversized_row[1024] = {0};
+  mu_assert("Adding an oversized row should fail", thirlage_insert_row_bytes_in_page(&page, oversized_row, sizeof(oversized_row)) == 0); 
 
   /*
   for (int i = 0; i < 512; i++) {

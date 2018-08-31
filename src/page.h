@@ -33,9 +33,10 @@ struct thirlage_page {
 
 void thirlage_init_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes);
 
-void thirlage_init_empty_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes, THIRLAGE_PAGE_HEADER_TYPE n);
+void thirlage_init_empty_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes, size_t s);
 
-int thirlage_insert_row_bytes_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes, size_t n);
+int thirlage_insert_row_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *row, size_t s);
 
-int thirlage_bytes_for_row_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE **bytes, THIRLAGE_PAGE_HEADER_TYPE n);
+int thirlage_row_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE **row, THIRLAGE_PAGE_HEADER_TYPE n);
 
+void thirlage_delete_row_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *row, THIRLAGE_PAGE_HEADER_TYPE n, size_t s);

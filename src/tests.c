@@ -47,9 +47,9 @@ static char *test_page() {
   thirlage_delete_row_in_page(&page, row_p, 1, s);
   mu_assert("Deleting a row should reduce the number of rows", *page.number_of_rows == n - 1);
   mu_assert("Deleting a row should move p appropriately", *page.p = p - s);
-  thirlage_row_in_page(&page, &row_p, 0);
+  mu_assert("Should be able to get first row after delete", thirlage_row_in_page(&page, &row_p, 0) == 1);
   mu_assert("A row before the deleted should be correct", memcmp(row_p, rows[0], s) == 0);
-  thirlage_row_in_page(&page, &row_p, *page.number_of_rows - 1);
+  mu_assert("Should be able to get last row after delete", thirlage_row_in_page(&page, &row_p, *page.number_of_rows - 1) == 1);
   mu_assert("A row after the deleted should be correct", memcmp(row_p, rows[s - 2], s) == 0);
 
   return 0;

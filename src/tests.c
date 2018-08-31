@@ -50,7 +50,7 @@ static char *test_page() {
   thirlage_row_in_page(&page, &row_p, 0);
   mu_assert("A row before the deleted should be correct", memcmp(row_p, rows[0], s) == 0);
   thirlage_row_in_page(&page, &row_p, *page.number_of_rows - 1);
-  mu_assert("A row after the deleted should be correct", memcmp(row_p, rows[s - 1], s) == 0);
+  mu_assert("A row after the deleted should be correct", memcmp(row_p, rows[s - 2], s) == 0);
 
   return 0;
 }

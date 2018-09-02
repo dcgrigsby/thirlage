@@ -6,13 +6,15 @@
  * @file page.h 
  * @brief Database Page struct and functions
  *
- * A page is a contiguous block of bytes containing a header and rows for a table.
+ * A page is a contiguous block of bytes containing a header and cells.
  *
  * The header starts at the first position of the bytes and is defined in the struct.
  *
- * Rows are variable length contiguous blocks of bytes stored in left-to-right order.  
+ * Cells are variable length contiguous blocks of bytes stored in left-to-right order.  
  *
- * Rows are written starting at the end of the page, filling in right-to-left. 
+ * Cells hold either rows for a table, or nodes for an index.
+ *
+ * Cells are written starting at the end of the page, filling in right-to-left. 
  *
  * Pages can be no larger than 65535 bytes.
  *
@@ -24,19 +26,21 @@
 
 typedef struct thirlage_page thirlage_page;
 
+// TODO XXX page id, page type - init empty should require a page id, page type; right node page id 
+
 struct thirlage_page {
   THIRLAGE_BYTE_TYPE *bytes;
-  THIRLAGE_PAGE_HEADER_TYPE *p;
-  THIRLAGE_PAGE_HEADER_TYPE *number_of_rows; 
-  THIRLAGE_PAGE_HEADER_TYPE *positions_of_rows;    
+  THIRLAGE_PAGE_HEADER_TYPE *write_index;
+  THIRLAGE_PAGE_HEADER_TYPE *number_of_cells; 
+  THIRLAGE_PAGE_HEADER_TYPE *cell_index;    
 };
 
 void thirlage_init_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes);
 
 void thirlage_init_empty_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes, size_t s);
 
-int thirlage_insert_row_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *row, size_t s);
+int thirlage_insert_cell_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *cell, size_t s);
 
-int thirlage_row_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE **row, THIRLAGE_PAGE_HEADER_TYPE n);
+int thirlage_cell_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE **cell, THIRLAGE_PAGE_HEADER_TYPE n);
 
-void thirlage_delete_row_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *row, THIRLAGE_PAGE_HEADER_TYPE n, size_t s);
+void thirlage_delete_cell_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *cell, THIRLAGE_PAGE_HEADER_TYPE n, size_t s);

@@ -18,39 +18,39 @@ static char *test_page() {
 	thirlage_page page;
   THIRLAGE_BYTE_TYPE bytes[page_size] = {0};
 	thirlage_init_empty_page(&page, bytes, page_size); 
-  mu_assert("An empty page should have zero rows", *page.number_of_rows == 0);
-  mu_assert("An empty page's p should point to the last byte of the page", *page.p = page_size);
+  mu_assert("An empty page should have zero cells", *page.number_of_cells == 0);
+  mu_assert("An empty page's p should point to the last byte of the page", *page.write_index = page_size);
 
-  THIRLAGE_BYTE_TYPE rows[][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-  static size_t s = sizeof(rows[0]);
+  THIRLAGE_BYTE_TYPE cells[][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+  static size_t s = sizeof(cells[0]);
 
   for (int i = 0; i < s; i ++) {
-      mu_assert("Adding a row should succeed", thirlage_insert_row_in_page(&page, rows[i], s) == 1);
-      mu_assert("Adding a row should increase number_of_rows", *page.number_of_rows == i + 1);
-      mu_assert("Adding a row should move p appropriately", *page.p == page_size - *page.number_of_rows * s);
+      mu_assert("Adding a cell should succeed", thirlage_insert_cell_in_page(&page, cells[i], s) == 1);
+      mu_assert("Adding a cell should increase number_of_cells", *page.number_of_cells == i + 1);
+      mu_assert("Adding a cell should move write_index appropriately", *page.write_index == page_size - *page.number_of_cells * s);
   }
 
-  THIRLAGE_BYTE_TYPE oversized_row[1024] = {0};
-  mu_assert("Adding an oversized row should fail", thirlage_insert_row_in_page(&page, oversized_row, sizeof(oversized_row)) == 0); 
+  THIRLAGE_BYTE_TYPE oversized_cell[1024] = {0};
+  mu_assert("Adding an oversized cell should fail", thirlage_insert_cell_in_page(&page, oversized_cell, sizeof(oversized_cell)) == 0); 
  
-  THIRLAGE_BYTE_TYPE *row_p;
+  THIRLAGE_BYTE_TYPE *cell_p;
   for (int i = 0; i < s; i ++) {
-    mu_assert("Getting a row should succeed", thirlage_row_in_page(&page, &row_p, i) == 1);
-    mu_assert("A gotten row should be correct", memcmp(row_p, rows[i], s) == 0);
+    mu_assert("Getting a cell should succeed", thirlage_cell_in_page(&page, &cell_p, i) == 1);
+    mu_assert("A gotten cell should be correct", memcmp(cell_p, cells[i], s) == 0);
   }
 
-  mu_assert("Getting a row that doesn't exist should fail", thirlage_row_in_page(&page, &row_p, *page.number_of_rows) == 0);
+  mu_assert("Getting a cell that doesn't exist should fail", thirlage_cell_in_page(&page, &cell_p, *page.number_of_cells) == 0);
 
    
-  THIRLAGE_PAGE_HEADER_TYPE n = *page.number_of_rows;
-  THIRLAGE_PAGE_HEADER_TYPE p = *page.p;
-  thirlage_delete_row_in_page(&page, row_p, 1, s);
-  mu_assert("Deleting a row should reduce the number of rows", *page.number_of_rows == n - 1);
-  mu_assert("Deleting a row should move p appropriately", *page.p = p - s);
-  mu_assert("Should be able to get first row after delete", thirlage_row_in_page(&page, &row_p, 0) == 1);
-  mu_assert("A row before the deleted should be correct", memcmp(row_p, rows[0], s) == 0);
-  mu_assert("Should be able to get last row after delete", thirlage_row_in_page(&page, &row_p, *page.number_of_rows - 1) == 1);
-  mu_assert("A row after the deleted should be correct", memcmp(row_p, rows[s - 2], s) == 0);
+  THIRLAGE_PAGE_HEADER_TYPE old_number_of_cells = *page.number_of_cells;
+  THIRLAGE_PAGE_HEADER_TYPE old_write_index = *page.write_index;
+  thirlage_delete_cell_in_page(&page, cell_p, 1, s);
+  mu_assert("Deleting a cell should reduce the number of cells", *page.number_of_cells == old_number_of_cells - 1);
+  mu_assert("Deleting a cell should move write_index appropriately", *page.write_index = old_write_index - s);
+  mu_assert("Should be able to get first cell after delete", thirlage_cell_in_page(&page, &cell_p, 0) == 1);
+  mu_assert("A cell before the deleted should be correct", memcmp(cell_p, cells[0], s) == 0);
+  mu_assert("Should be able to get last cell after delete", thirlage_cell_in_page(&page, &cell_p, *page.number_of_cells - 1) == 1);
+  mu_assert("A cell after the deleted should be correct", memcmp(cell_p, cells[s - 2], s) == 0);
 
   return 0;
 }

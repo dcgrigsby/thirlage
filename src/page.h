@@ -20,27 +20,32 @@
  *
  */
 
-// header type capable of supporting page sizes up to 65535 bytes. attempts to set larger will be caught by compiler.
-#define THIRLAGE_PAGE_HEADER_TYPE uint16_t
-#define THIRLAGE_BYTE_TYPE uint8_t
+typedef uint16_t u16;
+typedef uint8_t u8;
+
+enum {
+  TABLE_LEAF_PAGE = 1
+};
 
 typedef struct thirlage_page thirlage_page;
 
-// TODO XXX page id, page type - init empty should require a page id, page type; right node page id 
+// page type - init empty should require a page type 
 
 struct thirlage_page {
-  THIRLAGE_BYTE_TYPE *bytes;
-  THIRLAGE_PAGE_HEADER_TYPE *write_index;
-  THIRLAGE_PAGE_HEADER_TYPE *number_of_cells; 
-  THIRLAGE_PAGE_HEADER_TYPE *cell_index;    
+  u8 *bytes; 
+  u8 *type;
+  u16 *right_page_id;
+  u16 *write_index;
+  u16 *number_of_cells; 
+  u16 *cells_indexes; 
 };
 
-void thirlage_init_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes);
+void thirlage_init_page(thirlage_page *page, u8 *bytes);
 
-void thirlage_init_empty_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes, size_t s);
+void thirlage_init_empty_page(thirlage_page *page, u8 *bytes, u8 type, size_t size);
 
-int thirlage_insert_cell_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *cell, size_t s);
+int thirlage_insert_cell_in_page(thirlage_page *page, u8 *cell, size_t size);
 
-int thirlage_cell_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE **cell, THIRLAGE_PAGE_HEADER_TYPE n);
+int thirlage_cell_in_page(thirlage_page *page, u8 **cell, u16 index);
 
-void thirlage_delete_cell_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *cell, THIRLAGE_PAGE_HEADER_TYPE n, size_t s);
+void thirlage_delete_cell_in_page(thirlage_page *page, u8 *cell, u16 index, size_t size);

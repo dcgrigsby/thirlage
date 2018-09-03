@@ -16,12 +16,14 @@ static void print_page(thirlage_page *page, size_t s) {
 static char *test_page() {
 	const size_t page_size = 512;
 	thirlage_page page;
-  THIRLAGE_BYTE_TYPE bytes[page_size] = {0};
-	thirlage_init_empty_page(&page, bytes, page_size); 
+  u8 bytes[page_size] = {0};
+	thirlage_init_empty_page(&page, bytes, TABLE_LEAF_PAGE, page_size); 
+  mu_assert("An page should have the correct type", *page.type == TABLE_LEAF_PAGE);
+  mu_assert("An empty page's right_page_id should be 0", *page.right_page_id == 0);
   mu_assert("An empty page should have zero cells", *page.number_of_cells == 0);
-  mu_assert("An empty page's p should point to the last byte of the page", *page.write_index = page_size);
+  mu_assert("An empty page's write_index should point to the last byte of the page", *page.write_index = page_size);
 
-  THIRLAGE_BYTE_TYPE cells[][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+  u8 cells[][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
   static size_t s = sizeof(cells[0]);
 
   for (int i = 0; i < s; i ++) {
@@ -30,20 +32,19 @@ static char *test_page() {
       mu_assert("Adding a cell should move write_index appropriately", *page.write_index == page_size - *page.number_of_cells * s);
   }
 
-  THIRLAGE_BYTE_TYPE oversized_cell[1024] = {0};
+  u8 oversized_cell[1024] = {0};
   mu_assert("Adding an oversized cell should fail", thirlage_insert_cell_in_page(&page, oversized_cell, sizeof(oversized_cell)) == 0); 
  
-  THIRLAGE_BYTE_TYPE *cell_p;
+  u8 *cell_p;
   for (int i = 0; i < s; i ++) {
     mu_assert("Getting a cell should succeed", thirlage_cell_in_page(&page, &cell_p, i) == 1);
     mu_assert("A gotten cell should be correct", memcmp(cell_p, cells[i], s) == 0);
   }
 
   mu_assert("Getting a cell that doesn't exist should fail", thirlage_cell_in_page(&page, &cell_p, *page.number_of_cells) == 0);
-
    
-  THIRLAGE_PAGE_HEADER_TYPE old_number_of_cells = *page.number_of_cells;
-  THIRLAGE_PAGE_HEADER_TYPE old_write_index = *page.write_index;
+  u16 old_number_of_cells = *page.number_of_cells;
+  u16 old_write_index = *page.write_index;
   thirlage_delete_cell_in_page(&page, cell_p, 1, s);
   mu_assert("Deleting a cell should reduce the number of cells", *page.number_of_cells == old_number_of_cells - 1);
   mu_assert("Deleting a cell should move write_index appropriately", *page.write_index = old_write_index - s);

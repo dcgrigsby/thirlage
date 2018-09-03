@@ -4,83 +4,94 @@
 /**
  *  @brief Initialize *page using using its *bytes.
  */
-void thirlage_init_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes) {
-  // set pointer to bytes
+void thirlage_init_page(thirlage_page *page, u8 *bytes) {
+  // set pointer to bytes[0]
   page->bytes = bytes;
 
-  THIRLAGE_PAGE_HEADER_TYPE *p = (THIRLAGE_PAGE_HEADER_TYPE *)bytes;
+  void *p = (u8 *)bytes;
+  
+  // set pointer to type
+  page->type = p;
+  p += sizeof(*page->type);
 
-  // set pointer p;
+  // set pointer right_page_id
+  page->right_page_id = p;
+  p += sizeof(*page->right_page_id);
+
+  // set pointer to write index
   page->write_index = p;
-  p += sizeof(*p);
+  p += sizeof(*page->write_index);
 
   // set pointer to number_of_cells
-  page->number_of_cells = (THIRLAGE_PAGE_HEADER_TYPE *)p;
-  p += sizeof(*p);
+  page->number_of_cells = p;
+  p += sizeof(*page->number_of_cells);
 
-  // set pointer to cell_index[0]
-  page->cell_index = p;
+  // set pointer to cells_indexes[0]
+  page->cells_indexes = p;
+  // no need to advance pointer
 }
 
 /**
  * @brief Initialize an empty *page using its *bytes.
  */
-void thirlage_init_empty_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *bytes, size_t s) {
+void thirlage_init_empty_page(thirlage_page *page, u8 *bytes, u8 type, size_t size) {
 	thirlage_init_page(page, bytes);
-  *page->write_index = s;
+  *page->type = type; 
+  // no need to set right_page_id
+  *page->write_index = size;
   *page->number_of_cells = 0;
 }
 
 /**
- * @brief Insert a cell's s *bytes in *page. Return 1 if successful; 0 if not.
+ * @brief Insert a cell's size *bytes in *page. Return 1 if successful; 0 if not.
  */
-int thirlage_insert_cell_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *cell, size_t s) {
-  // need to have enough room for the cell *and* its cell_index entry
-  THIRLAGE_PAGE_HEADER_TYPE space_available = *page->write_index - (&page->cell_index[*page->number_of_cells] - (THIRLAGE_PAGE_HEADER_TYPE *)page->bytes) - sizeof(THIRLAGE_PAGE_HEADER_TYPE);
-  if (s > space_available) 
+int thirlage_insert_cell_in_page(thirlage_page *page, u8 *cell, size_t size) {
+  // need to have enough room for the cell *and* its cells_indexes entry
+  u16 space_available = *page->write_index - (&page->cells_indexes[*page->number_of_cells] - (u16 *)page->bytes) - sizeof(u16);
+  if (size > space_available) 
     return 0;
 
   // increment number of cells
   (*page->number_of_cells)++; 
 
   // copy cell into page
-  THIRLAGE_BYTE_TYPE *p = page->bytes + *page->write_index - s;
-  memcpy(p, cell, s); 
+  u8 *p = page->bytes + *page->write_index - size;
+  memcpy(p, cell, size); 
 
   // store cell index and move page->write_index
-  *page->write_index = page->cell_index[*page->number_of_cells - 1] = p - page->bytes; 
+  *page->write_index = page->cells_indexes[*page->number_of_cells - 1] = p - page->bytes; 
 
   return 1;
 }
 
 /**
- * @brief Set *cell to the n-th in *page. Return 1 if successful; 0 if not.
+ * @brief Set *cell to the index-th in *page. Return 1 if successful; 0 if not.
  */
-int thirlage_cell_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE **cell, THIRLAGE_PAGE_HEADER_TYPE n) {
-  if (n > *page->number_of_cells - 1)
+int thirlage_cell_in_page(thirlage_page *page, u8 **cell, u16 index) {
+  if (index > *page->number_of_cells - 1)
     return 0;
 
-  *cell = page->bytes + page->cell_index[n]; 
+  *cell = page->bytes + page->cells_indexes[index]; 
 
   return 1;
 }
 
 /**
- * @brief Delete the s btyes of *cell, the n-th in *page. 
+ * @brief Delete the size btyes of *cell, the index-th in *page. 
  */
-void thirlage_delete_cell_in_page(thirlage_page *page, THIRLAGE_BYTE_TYPE *cell, THIRLAGE_PAGE_HEADER_TYPE n, size_t s) {
+void thirlage_delete_cell_in_page(thirlage_page *page, u8 *cell, u16 index, size_t size) {
   // noting that cells are stored right to left, move s bytes to to the right all bytes from the left-most cell until the one to be deleted
-  THIRLAGE_BYTE_TYPE *src = page->bytes + page->cell_index[*page->number_of_cells - 1];
-  memmove(src + s, src, cell - src); 
+  u8 *src = page->bytes + page->cells_indexes[*page->number_of_cells - 1];
+  memmove(src + size, src, cell - src); 
 
   // move page->write_index to correct position
-  *page->write_index = *page->write_index + s;
+  *page->write_index = *page->write_index + size;
 
   // decrement the number of cells
   (*page->number_of_cells)--;
 
-  // shift all of the cell_indexs up
-  for (THIRLAGE_PAGE_HEADER_TYPE i = n; i < *page->number_of_cells - 1; i++)
-    page->cell_index[i] = page->cell_index[i + 1];
+  // shift all of the cells_indexes up
+  for (u16 i = index; i < *page->number_of_cells - 1; i++)
+    page->cells_indexes[i] = page->cells_indexes[i + 1];
 }
 

@@ -1,5 +1,5 @@
 #include <stddef.h>
-#include <stdint.h>
+#include "int.h"
 
 /**
  *
@@ -20,8 +20,6 @@
  *
  */
 
-typedef uint16_t u16;
-typedef uint8_t u8;
 
 enum {
   TABLE_LEAF_PAGE = 1
@@ -29,12 +27,10 @@ enum {
 
 typedef struct thirlage_page thirlage_page;
 
-// page type - init empty should require a page type 
-
 struct thirlage_page {
   u8 *bytes; 
   u8 *type;
-  u16 *right_page_id;
+  u16 *right_page_index;
   u16 *write_index;
   u16 *number_of_cells; 
   u16 *cells_indexes; 

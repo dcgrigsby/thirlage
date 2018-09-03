@@ -19,7 +19,7 @@ static char *test_page() {
   u8 bytes[page_size] = {0};
 	thirlage_init_empty_page(&page, bytes, TABLE_LEAF_PAGE, page_size); 
   mu_assert("An page should have the correct type", *page.type == TABLE_LEAF_PAGE);
-  mu_assert("An empty page's right_page_id should be 0", *page.right_page_id == 0);
+  mu_assert("An empty page's right_page_index should be 0", *page.right_page_index == 0);
   mu_assert("An empty page should have zero cells", *page.number_of_cells == 0);
   mu_assert("An empty page's write_index should point to the last byte of the page", *page.write_index = page_size);
 

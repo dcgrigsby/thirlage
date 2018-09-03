@@ -14,9 +14,9 @@ void thirlage_init_page(thirlage_page *page, u8 *bytes) {
   page->type = p;
   p += sizeof(*page->type);
 
-  // set pointer right_page_id
-  page->right_page_id = p;
-  p += sizeof(*page->right_page_id);
+  // set pointer right_page_index
+  page->right_page_index = p;
+  p += sizeof(*page->right_page_index);
 
   // set pointer to write index
   page->write_index = p;
@@ -37,7 +37,7 @@ void thirlage_init_page(thirlage_page *page, u8 *bytes) {
 void thirlage_init_empty_page(thirlage_page *page, u8 *bytes, u8 type, size_t size) {
 	thirlage_init_page(page, bytes);
   *page->type = type; 
-  // no need to set right_page_id
+  // no need to set right_page_index
   *page->write_index = size;
   *page->number_of_cells = 0;
 }

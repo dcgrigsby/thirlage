@@ -25,7 +25,7 @@ typedef struct thirlage_page thirlage_page;
 struct thirlage_page {
   char *bytes; 
   unsigned short *type;
-  unsigned short *right_page_index;
+  unsigned int *right_page_index;
   unsigned short *write_index;
   unsigned short *number_of_cells; 
   unsigned short *cells_indexes; 

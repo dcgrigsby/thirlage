@@ -17,7 +17,7 @@
 typedef struct thirlage_file_header thirlage_file_header;
 
 struct thirlage_file_header {
-  char identifier[sizeof(FILE_HEADER_IDENTIFIER)];
+  char *identifier;
   unsigned short *version;
   unsigned int *page_size;
   unsigned int *number_of_pages;

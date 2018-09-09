@@ -27,7 +27,7 @@ static char *test_page() {
   unsigned short cell_size = sizeof(cells[0]);
   unsigned short number_of_cells = sizeof(cells)/cell_size; 
   for (int i = 0; i < number_of_cells; i ++) {
-      mu_assert("Adding a cell should succeed", thirlage_insert_cell_in_page(&page, cells[i], s) == 1);
+      mu_assert("Adding a cell should succeed", thirlage_insert_cell_in_page(&page, cells[i], cell_size) == 1);
       mu_assert("Adding a cell should increase number_of_cells", *page.number_of_cells == i + 1);
       mu_assert("Adding a cell should move write_index appropriately", *page.write_index == page_size - *page.number_of_cells * cell_size);
   }
@@ -36,9 +36,9 @@ static char *test_page() {
   mu_assert("Adding an oversized cell should fail", thirlage_insert_cell_in_page(&page, oversized_cell, sizeof(oversized_cell)) == 0); 
  
   char *cell;
-  for (int i = 0; i < s; i ++) {
+  for (int i = 0; i < number_of_cells; i ++) {
     mu_assert("Getting a cell should succeed", thirlage_cell_in_page(&page, &cell, i) == 1);
-    mu_assert("A gotten cell should be correct", memcmp(cell, cells[i], s) == 0);
+    mu_assert("A gotten cell should be correct", memcmp(cell, cells[i], cell_size) == 0);
   }
 
   mu_assert("Getting a cell that doesn't exist should fail", thirlage_cell_in_page(&page, &cell, *page.number_of_cells) == 0);

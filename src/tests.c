@@ -14,10 +14,10 @@ static void print_page(thirlage_page *page, size_t s) {
 }
 
 static char *test_page() {
-	const size_t page_size = 512;
-	thirlage_page page;
+  const size_t page_size = 512;
+  thirlage_page page;
   u8 bytes[page_size] = {0};
-	thirlage_init_empty_page(&page, bytes, TABLE_LEAF_PAGE, page_size); 
+  thirlage_init_empty_page(&page, bytes, TABLE_LEAF_PAGE, page_size); 
   mu_assert("An page should have the correct type", *page.type == TABLE_LEAF_PAGE);
   mu_assert("An empty page's right_page_index should be 0", *page.right_page_index == 0);
   mu_assert("An empty page should have zero cells", *page.number_of_cells == 0);

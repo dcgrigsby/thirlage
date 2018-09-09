@@ -1,3 +1,18 @@
+refactor XXX HERE in page
+
+move comments from .c to .h
+
+write bytes, not pages -
+
+for root page, share bytes with header and page (make size for page smaller)
+
+
+
+
+
+
+
+
 First crack at a simple page:
 
 A single table

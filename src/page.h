@@ -1,3 +1,5 @@
+#import <stddef.h>
+
 /**
  *
  * @file page.h 
@@ -39,12 +41,13 @@ void thirlage_init_page(thirlage_page *page, char *bytes);
 /**
  * @brief Initialize an empty *page, of page_type type, of page_size size, using its *bytes.
  */
-void thirlage_init_empty_page(thirlage_page *page, char *bytes, unsigned short page_type, unsigned int page_size);
+void thirlage_init_empty_page(thirlage_page *page, char *bytes, unsigned short page_type, size_t page_size);
 
 /**
  * @brief Insert *cell's cell_size bytes in *page. Return 1 if successful; 0 if not.
  */
-int thirlage_insert_cell_in_page(thirlage_page *page, char *cell, unsigned short cell_size);
+//int thirlage_insert_cell_in_page(thirlage_page *page, char *cell, unsigned short cell_size);
+int thirlage_insert_cell_in_page(thirlage_page *page, char *cell, size_t cell_size);
 
 /**
  * @brief Set *cell to the cell_index-th cell in *page. Return 1 if successful; 0 if not.
@@ -54,4 +57,4 @@ int thirlage_cell_in_page(thirlage_page *page, char **cell, unsigned short cell_
 /**
  * @brief Delete the cell_size btyes of *cell, the cell_index-th in *page, defragmenting in the process. 
  */
-void thirlage_delete_cell_in_page(thirlage_page *page, char *cell, unsigned short cell_index, unsigned short cell_size);
+void thirlage_delete_cell_in_page(thirlage_page *page, char *cell, unsigned short cell_index, size_t cell_size);

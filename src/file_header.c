@@ -14,7 +14,7 @@ void thirlage_init_file_header(thirlage_file_header *file_header, char *bytes) {
   file_header->number_of_pages = (unsigned int *)bytes;
 }
 
-void thirlage_init_empty_file_header(thirlage_file_header *file_header, char *bytes, unsigned int page_size) {
+void thirlage_init_empty_file_header(thirlage_file_header *file_header, char *bytes, size_t page_size) {
   thirlage_init_file_header(file_header, bytes);
   strcpy(file_header->identifier, FILE_HEADER_IDENTIFIER);
   *file_header->version = FILE_HEADER_VERSION;

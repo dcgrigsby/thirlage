@@ -42,7 +42,7 @@ static char *test_page() {
   }
 
   mu_assert("Getting a cell that doesn't exist should fail", thirlage_cell_in_page(&page, &cell, *page.number_of_cells) == 0);
-   
+
   unsigned short old_number_of_cells = *page.number_of_cells;
   unsigned short old_write_index = *page.write_index;
   thirlage_delete_cell_in_page(&page, cell, 1, cell_size);

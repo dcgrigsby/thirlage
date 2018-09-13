@@ -34,7 +34,7 @@ int thirlage_insert_cell_in_page(thirlage_page *page, char *cell, size_t cell_si
   // include space for new cells_indexes entry by including its sizeof
   size_t space_needed = cell_size + sizeof(*page->cells_indexes); 
   if (space_needed > space_available) 
-    return 0;
+    return -1;
 
   page->cells_indexes[*page->number_of_cells] = *page->write_index -= cell_size;
   
@@ -42,16 +42,16 @@ int thirlage_insert_cell_in_page(thirlage_page *page, char *cell, size_t cell_si
   
   *page->number_of_cells += 1; 
 
-  return 1;
+  return 0;
 }
 
 int thirlage_cell_in_page(thirlage_page *page, char **cell, unsigned short cell_index) {
   if (cell_index > *page->number_of_cells - 1)
-    return 0;
+    return -1;
 
   *cell = page->bytes + page->cells_indexes[cell_index]; 
 
-  return 1;
+  return 0;
 }
 
 void thirlage_delete_cell_in_page(thirlage_page *page, char *cell, unsigned short cell_index, size_t cell_size) {

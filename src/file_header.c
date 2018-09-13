@@ -25,10 +25,10 @@ void thirlage_init_empty_file_header(thirlage_file_header *file_header, char **b
 
 int thirlage_validate_file_header(thirlage_file_header *file_header) {
   if (strcmp(file_header->identifier, FILE_HEADER_IDENTIFIER) != 0)
-    return 0;
+    return -1;
 
   if (*file_header->version != FILE_HEADER_VERSION) 
-    return 0;
+    return -1;
 
-  return 1;
+  return 0;
 }

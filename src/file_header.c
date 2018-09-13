@@ -1,20 +1,21 @@
 #import <string.h>
 #import "file_header.h"
 
-void thirlage_init_file_header(thirlage_file_header *file_header, char *bytes) {
-  file_header->identifier = bytes;
-  bytes += sizeof(FILE_HEADER_IDENTIFIER);
+void thirlage_init_file_header(thirlage_file_header *file_header, char **bytes) {
+  file_header->identifier = *bytes;
+  *bytes += sizeof(FILE_HEADER_IDENTIFIER);
 
-  file_header->version = (unsigned short *)bytes;
-  bytes += sizeof(file_header->version);
+  file_header->version = (unsigned short *)*bytes;
+  *bytes += sizeof(file_header->version);
 
-  file_header->page_size = (unsigned int *)bytes;
-  bytes += sizeof(file_header->page_size);
+  file_header->page_size = (unsigned int *)*bytes;
+  *bytes += sizeof(file_header->page_size);
 
-  file_header->number_of_pages = (unsigned int *)bytes;
+  file_header->number_of_pages = (unsigned int *)*bytes;
+  *bytes += sizeof(file_header->number_of_pages);
 }
 
-void thirlage_init_empty_file_header(thirlage_file_header *file_header, char *bytes, size_t page_size) {
+void thirlage_init_empty_file_header(thirlage_file_header *file_header, char **bytes, size_t page_size) {
   thirlage_init_file_header(file_header, bytes);
   strcpy(file_header->identifier, FILE_HEADER_IDENTIFIER);
   *file_header->version = FILE_HEADER_VERSION;

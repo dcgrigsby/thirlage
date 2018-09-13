@@ -7,9 +7,9 @@
  *
  * The header holds database file meta data.
  *
- * It is stored in the sizeof(thirlage_file_header) bytes of the database file.
+ * It is stored starting at the first byte of the database file.
  *
- * The first page follow; it is shortened the length of the header.
+ * The first page follows; it is shortened the length of the header.
  *
  */
 
@@ -26,14 +26,14 @@ struct thirlage_file_header {
 };
 
 /**
- * @brief Initialize *file_header using its *bytes.
+ * @brief Initialize *file_header using its *bytes, advancing **bytes forward so that a page can follow.
  */
-void thirlage_init_file_header(thirlage_file_header *file_header, char *bytes);
+void thirlage_init_file_header(thirlage_file_header *file_header, char **bytes);
 
 /**
  * @brief Initialize an empty *file_header using its *bytes with a page_size pages.
  */
-void thirlage_init_empty_file_header(thirlage_file_header *file_header, char *bytes, size_t page_size);
+void thirlage_init_empty_file_header(thirlage_file_header *file_header, char **bytes, size_t page_size);
 
 /**
  * @brief Validate *file_header, returning 1 if valid; 0 if not.

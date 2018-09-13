@@ -1,10 +1,11 @@
-refactor XXX HERE in page
+write tests for file_header
 
-move comments from .c to .h
+change my functions to return 0 if successful
 
-write bytes, not pages -
+then work on pager:
+  write bytes, not pages -
 
-for root page, share bytes with header and page (make size for page smaller)
+  for root page, share bytes with header and page (make size for page smaller)
 
 
 

@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h> 
 #include "minunit.h"
 #include "page.h"
+#include "file_header.h"
 
 int tests_run = 0;
 int assertions_evaluated = 0;
@@ -13,11 +15,33 @@ static void print_page(thirlage_page *page, unsigned int page_size) {
   printf("\n");
 }
 
+static char *test_file_header() {
+  const unsigned page_size = 512;
+  thirlage_file_header file_header;
+  char *bytes = malloc(page_size);
+  char *p = bytes; 
+  thirlage_init_empty_file_header(&file_header, &p, page_size);
+
+  mu_assert("An empty file header should be valid", thirlage_validate_file_header(&file_header) == 1);
+  // not testing identifier or version, since they're tested here^^^
+  mu_assert("A file header should have the correct page size", *file_header.page_size == page_size);
+  mu_assert("An empty file header should have zero pages", *file_header.number_of_pages == 0);
+
+  thirlage_page page;
+  thirlage_init_empty_page(&page, p, TABLE_LEAF_PAGE, page_size - (p - bytes));
+  mu_assert("A page that follows a header should start in the correct place", page.bytes != bytes);
+
+  free(bytes);
+
+  return 0;
+}
+
 static char *test_page() {
   const unsigned int page_size = 512;
   thirlage_page page;
   char bytes[page_size] = {0};
   thirlage_init_empty_page(&page, bytes, TABLE_LEAF_PAGE, page_size); 
+
   mu_assert("An page should have the correct type", *page.type == TABLE_LEAF_PAGE);
   mu_assert("An empty page's right_page_index should be 0", *page.right_page_index == 0);
   mu_assert("An empty page should have zero cells", *page.number_of_cells == 0);
@@ -46,6 +70,7 @@ static char *test_page() {
   unsigned short old_number_of_cells = *page.number_of_cells;
   unsigned short old_write_index = *page.write_index;
   thirlage_delete_cell_in_page(&page, cell, 1, cell_size);
+
   mu_assert("Deleting a cell should reduce the number of cells", *page.number_of_cells == old_number_of_cells - 1);
   mu_assert("Deleting a cell should move write_index appropriately", *page.write_index = old_write_index - cell_size);
   mu_assert("Should be able to get first cell after delete", thirlage_cell_in_page(&page, &cell, 0) == 1);
@@ -58,6 +83,7 @@ static char *test_page() {
 
 static char *all_tests() {
   mu_run_test(test_page);
+  mu_run_test(test_file_header);
   return 0;
 }
 

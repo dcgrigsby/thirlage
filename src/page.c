@@ -28,9 +28,6 @@ void thirlage_init_empty_page(thirlage_page *page, char *bytes, unsigned short p
 }
 
 int thirlage_insert_cell_in_page(thirlage_page *page, char *cell, size_t cell_size) {
-
-  // u16 space_available = *page->write_index - (&page->cells_indexes[*page->number_of_cells] - (u16 *)page->bytes) - sizeof(u16);
-
   // include space of last cells_indexes by using number_of_cells and not number_of_cells - 1
   size_t space_available = *page->write_index - ((size_t *)page->cells_indexes + *page->number_of_cells - (size_t *)page->bytes); 
 

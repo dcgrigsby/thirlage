@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stddef.h>
 
 /**
@@ -40,4 +42,7 @@ void thirlage_init_empty_file_header(thirlage_file_header *file_header, char **b
  */
 int thirlage_validate_file_header(thirlage_file_header *file_header);
 
-
+/**
+ * @brief Return the size of the header in bytes
+ */
+size_t thirlage_file_header_size(thirlage_file_header *file_header);

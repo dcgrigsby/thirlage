@@ -1,14 +1,9 @@
-write tests for file_header
-
-change my functions to return 0 if successful
-
-then work on pager:
+work on pager:
   write bytes, not pages -
 
-  for root page, share bytes with header and page (make size for page smaller)
+when to add caching?  when to add free list?
 
-
-
+transactions
 
 
 
@@ -17,23 +12,14 @@ then work on pager:
 First crack at a simple page:
 
 A single table
-A page represents a table
 Single page, on disk, in memory with cells
 
 Future:
- 
-Multiple pages, fixed size w/ free list
-Single table still; how to link to next page?
 
 Multiple tables
  First page a table that points to other tables
 
-Delete cells, then defragment
-  Mark for deletion and do later, or do when delete called? 
-  Threading?
-
-Grow pages, instead of fixed size.
- Retain free list for dropped tables. Consult before creating new page. 
+Change to cell mark for deletion and do later?
 
 Think about how to do partial updates/patches when writing to pages
 

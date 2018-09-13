@@ -32,3 +32,11 @@ int thirlage_validate_file_header(thirlage_file_header *file_header) {
 
   return 0;
 }
+
+size_t thirlage_file_header_size(thirlage_file_header *file_header) {
+  return 
+    strlen(file_header->identifier) + 1 +
+    sizeof(*file_header->version) +
+    sizeof(*file_header->page_size) +
+    sizeof(*file_header->number_of_pages);
+}

@@ -32,10 +32,11 @@ clean-build:
 	rm -fr $(BUILD_DIR)
 
 clean-thirlage:
-	rm -rf thirlage
+	rm -fr thirlage
 
 clean-tests:
 	rm -rf tests
+	rm -f test.thirlage
 
 clean: clean-doc clean-build clean-tests clean-thirlage
 

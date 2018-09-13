@@ -2,18 +2,24 @@
 #include <string.h>
 #include <stdlib.h> 
 #include "minunit.h"
-#include "page.h"
+#include "pager.h"
 #include "file_header.h"
+#include "page.h"
 
 int tests_run = 0;
 int assertions_evaluated = 0;
 
-static void print_page(thirlage_page *page, unsigned int page_size) {
-  for (unsigned int i = 0; i < page_size; i++) {
-    printf("%03u ", page->bytes[i]);
-  }
-  printf("\n");
+static char *test_pager() {
+	thirlage_pager pager;
+
+  FILE *file = fopen("test.thirlage", "a+");
+  mu_assert("A database file can be opened for reading and appending", file != NULL); 
+
+  mu_assert("A database file can be close", fclose(file) == 0);
+
+  return 0;
 }
+
 
 static char *test_file_header() {
   const unsigned page_size = 512;
@@ -26,6 +32,7 @@ static char *test_file_header() {
   // not testing identifier or version, since they're tested here^^^
   mu_assert("A file header should have the correct page size", *file_header.page_size == page_size);
   mu_assert("An empty file header should have zero pages", *file_header.number_of_pages == 0);
+  mu_assert("A file header's size should be knowable", thirlage_file_header_size(&file_header));
 
   thirlage_page page;
   thirlage_init_empty_page(&page, p, TABLE_LEAF_PAGE, page_size - (p - bytes));
@@ -34,6 +41,13 @@ static char *test_file_header() {
   free(bytes);
 
   return 0;
+}
+
+static void print_page(thirlage_page *page, unsigned int page_size) {
+  for (unsigned int i = 0; i < page_size; i++) {
+    printf("%03u ", page->bytes[i]);
+  }
+  printf("\n");
 }
 
 static char *test_page() {
@@ -82,8 +96,9 @@ static char *test_page() {
 }
 
 static char *all_tests() {
-  mu_run_test(test_page);
+  mu_run_test(test_pager);
   mu_run_test(test_file_header);
+  mu_run_test(test_page);
   return 0;
 }
 
